@@ -27,3 +27,5 @@ if __name__ == "__main__":
     app = App()
     notebook = MainNotebook(app)
     app.mainloop()
+    style = ttk.Style(app)
+    style.theme_use("aqua")

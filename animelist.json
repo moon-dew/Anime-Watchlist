@@ -1,0 +1,29 @@
+{
+   "List": [
+        {
+            "Name": "Demon Slayer",
+            "Genre": "Action",
+            "Rating": 8.5
+        },
+        {
+            "Name": "Attack on Titan",
+            "Genre": "Horror",
+            "Rating": 8.0
+        },
+        {
+            "Name": "One Piece",
+            "Genre": "Action",
+            "Rating": 9.5
+        },
+        {
+            "Name": "Naruto",
+            "Genre": "Action",
+            "Rating": 6.3
+        },
+        {
+            "Name": "Bleach",
+            "Genre": "Shounen",
+            "Rating": 7.5
+        }
+    ]
+}
