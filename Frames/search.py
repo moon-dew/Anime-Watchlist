@@ -14,14 +14,14 @@ class Search(ttk.Frame):
 
         self.search_bar = ttk.Entry(self, text="Please input the anime name.")
         self.search_bar.pack(**options)
-        self.anime_list = json.load(open("animelist.json"))
+        self.anime_list = json.load(open("masterlist.json"))
         self.search_bar.bind('<KeyRelease>', self.update)
 
         headings = ("name", "genre", "score")
         self.results = treeview_upgrade.MyTreeview(self, columns=headings, show="headings")
         self.results.heading("name", text="Name", sort_by="name")
         self.results.heading("genre", text="Genre", sort_by="name")
-        self.results.heading("score", text="Score", sort_by="num")
+        self.results.heading("score", text="Average Score", sort_by="num")
         j = self.anime_list
         for i in j["List"]:
             self.results.insert("", "end", values=(i["Name"], i["Genre"], i['Rating']))

@@ -1,0 +1,52 @@
+{
+   "List": [
+        {
+            "Name": "Demon Slayer",
+            "Genre": "Action",
+            "Rating": 8.5,
+            "ID": 1
+        },
+        {
+            "Name": "Attack on Titan",
+            "Genre": "Horror",
+            "Rating": 8.0,
+            "ID": 2
+        },
+        {
+            "Name": "One Piece",
+            "Genre": "Action",
+            "Rating": 9.5,
+            "ID": 3
+        },
+        {
+            "Name": "Naruto",
+            "Genre": "Action",
+            "Rating": 6.3,
+            "ID": 4
+        },
+        {
+            "Name": "Bleach",
+            "Genre": "Shounen",
+            "Rating": 7.5,
+            "ID": 5
+        },
+        {
+            "Name": "Hunter x Hunter",
+            "Genre": "Action",
+            "Rating": 6.2,
+            "ID": 6
+        },
+        {
+            "Name": "My Hero Academia",
+            "Genre": "Fantasy",
+            "Rating": 7.3,
+            "ID": 7
+        },
+        {
+            "Name": "Dragon Ball",
+            "Genre": "Action",
+            "Rating": 8.5,
+            "ID": 8
+        }
+    ]
+}
