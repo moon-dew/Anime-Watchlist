@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from Frames.search import Search
-from Frames.item import Item
+from Frames.list import ListFrame
 
 class MainNotebook(ttk.Notebook):
     def __init__(self, container):
@@ -10,6 +10,7 @@ class MainNotebook(ttk.Notebook):
         options = {'padx': 5, 'pady': 5}
         
         self.add(Search(self), text="Search")
+        self.add(ListFrame(self), text="List")
         self.pack(**options)
 
 class App(tk.Tk):
