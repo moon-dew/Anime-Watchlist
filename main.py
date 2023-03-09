@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from Frames.search import Search
+from Frames.item import Item
 
 class MainNotebook(ttk.Notebook):
     def __init__(self, container):

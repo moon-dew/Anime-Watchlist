@@ -3,12 +3,14 @@ from tkinter import ttk
 import json
 import treeview_upgrade
 from tkinter import messagebox
+from Frames.item import Item
 
 class Search(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
         # field options
         options = {'padx': 5, 'pady': 5}
+        self.container = container
 
         self.search_bar = ttk.Entry(self, text="Please input the anime name.")
         self.search_bar.pack(**options)
@@ -45,4 +47,4 @@ class Search(ttk.Frame):
 
     def item_selected(self, event):
         item = self.results.selection()[0]
-        messagebox.showinfo("Selected", self.results.item(item, "values"))
+        self.container.add(Item(self.container, self.results.item(item, "values")[0], self.results.item(item, "values")[1], self.results.item(item, "values")[2]), text="Item")
