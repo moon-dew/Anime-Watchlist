@@ -4,6 +4,7 @@
             "Name": "Demon Slayer",
             "Genre": "Action",
             "Rating": 8.5,
+            "Episodes":
             "ID": 1
         },
         {
@@ -33,7 +34,7 @@
         {
             "Name": "Hunter x Hunter",
             "Genre": "Action",
-            "Rating": 6.2,
+            "Rating": 10.0,
             "ID": 6
         },
         {
