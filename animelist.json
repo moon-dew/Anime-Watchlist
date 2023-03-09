@@ -24,6 +24,21 @@
             "Name": "Bleach",
             "Genre": "Shounen",
             "Rating": 7.5
+        },
+        {
+            "Name": "Hunter x Hunter",
+            "Genre": "Action",
+            "Rating": 6.2
+        },
+        {
+            "Name": "My Hero Academia",
+            "Genre": "Fantasy",
+            "Rating": 7.3
+        },
+        {
+            "Name": "Dragon Ball",
+            "Genre": "Action",
+            "Rating": 8.5
         }
     ]
 }

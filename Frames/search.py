@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 import json
+import treeview_upgrade
 
 class Search(ttk.Frame):
     def __init__(self, container):
@@ -27,11 +27,15 @@ class Search(ttk.Frame):
         self.search_bar.bind('<KeyRelease>', update)
 
         headings = ("name", "genre", "score")
-        self.results = ttk.Treeview(self, columns=headings, show="headings")
-        self.results.heading("name", text="Name")
-        self.results.heading("genre", text="Genre")
-        self.results.heading("score", text="Score")
+        self.results = treeview_upgrade.MyTreeview(self, columns=headings, show="headings")
+        self.results.heading("name", text="Name", sort_by="name")
+        self.results.heading("genre", text="Genre", sort_by="name")
+        self.results.heading("score", text="Score", sort_by="num")
         j = json.load(open("animelist.json"))
         for i in j["List"]:
             self.results.insert("", "end", values=(i["Name"], i["Genre"], i['Rating']))
         self.results.pack(**options)
+        # add a scrollbar
+        self.scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.results.yview)
+        self.results.configure(yscroll=self.scrollbar.set)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
