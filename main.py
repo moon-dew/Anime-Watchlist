@@ -2,11 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 from Frames.search import Search
 
-#Gloabl Variables
-full_anime_list = ["Demon Slayer", "My Hero Academia", "Steins;Gate", "One Piece"]
-
-#TODO: Text label to filter anime list
-
 class MainNotebook(ttk.Notebook):
     def __init__(self, container):
         super().__init__(container)
@@ -27,5 +22,5 @@ if __name__ == "__main__":
     app = App()
     notebook = MainNotebook(app)
     app.mainloop()
-    style = ttk.Style(app)
-    style.theme_use("aqua")
+    # style = ttk.Style(app)
+    # style.theme_use("aqua")
