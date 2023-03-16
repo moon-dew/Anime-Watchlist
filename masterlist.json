@@ -11,7 +11,7 @@
             "Name": "Attack on Titan",
             "Genre": "Horror",
             "Rating": 8.0,
-            "Episodes": 25,
+            "Episodes": 26,
             "ID": 2
         },
         {
@@ -32,28 +32,28 @@
             "Name": "Bleach",
             "Genre": "Shounen",
             "Rating": 7.5,
-            "Episodes": 300,
+            "Episodes": 200,
             "ID": 5
         },
         {
             "Name": "Hunter x Hunter",
             "Genre": "Action",
             "Rating": 10.0,
-            "Episodes": 150,
+            "Episodes": 174,
             "ID": 6
         },
         {
             "Name": "My Hero Academia",
             "Genre": "Fantasy",
             "Rating": 7.3,
-            "Episodes": 100,
+            "Episodes": 13,
             "ID": 7
         },
         {
             "Name": "Dragon Ball",
             "Genre": "Action",
             "Rating": 8.5,
-            "Episodes": 500,
+            "Episodes": 200,
             "ID": 8
         }
     ]

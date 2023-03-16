@@ -65,4 +65,4 @@ class Search(ttk.Frame):
         item = self.results.selection()[0]
         self.container.add(Item(self.container,
                                 self.results.item(item, "values")[3]),
-                           text="Item")
+                           text=self.results.item(item, "values")[0])

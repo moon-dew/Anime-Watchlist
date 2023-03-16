@@ -1,6 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
 import json
+from enum import Enum
+
+
+class EStatus(Enum):
+    WATCHING = 0
+    COMPLETED = 1
+    ON_HOLD = 2
+    DROPPED = 3
+    PLAN_TO_WATCH = 4
 
 
 class Item(ttk.Frame):
@@ -16,7 +25,9 @@ class Item(ttk.Frame):
         print(id)
         self.item = [
             i for i in anilist['Accounts'][0]["List"] if i[0] == int(id)
-        ][0]
+        ]
+        if self.item:
+            self.item = self.item[0]
         masterlist = json.load(open("masterlist.json"))
         self.masteritem = [
             i for i in masterlist['List'] if i["ID"] == int(id)
@@ -55,13 +66,15 @@ class Settings(ttk.LabelFrame):
                                    textvariable=self.init_status,
                                    width=15,
                                    state="readonly")
-        self.status.current(self.item[1])
+        if self.item:
+            self.status.current(self.item[1])
         self.status.pack(**options)
 
         class Score(ttk.LabelFrame):
 
             def __init__(self, container):
-                super().__init__(container)
+                super().__init__(container, text="Score")
+                self.container = container
                 self.init_score = tk.StringVar()
                 self.score = ttk.Spinbox(self,
                                          from_=0,
@@ -69,7 +82,8 @@ class Settings(ttk.LabelFrame):
                                          textvariable=self.init_score,
                                          state="readonly",
                                          width=2)
-                self.init_score.set("10")
+                if self.container.item:
+                    self.init_score.set(self.container.item[3])
                 self.score.pack(side=tk.LEFT, **options)
                 self.max_score = ttk.Label(self, text="/10")
                 self.max_score.pack(side=tk.RIGHT, **options)
@@ -77,9 +91,9 @@ class Settings(ttk.LabelFrame):
         class Progress(ttk.LabelFrame):
 
             def __init__(self, container):
-                super().__init__(container)
+                super().__init__(container, text="Episodes")
                 self.container = container
-                episodes = self.container.masteritem
+                episodes = self.container.masteritem["Episodes"]
                 self.init_progress = tk.StringVar()
                 self.progress = ttk.Spinbox(self,
                                             from_=0,
@@ -87,7 +101,8 @@ class Settings(ttk.LabelFrame):
                                             textvariable=self.init_progress,
                                             state="readonly",
                                             width=4)
-                self.init_progress.set("10")
+                if self.container.item:
+                    self.init_progress.set(self.container.item[2])
                 self.progress.pack(side=tk.LEFT, **options)
 
                 self.total_episodes = ttk.Label(self, text=f"/{episodes}")
