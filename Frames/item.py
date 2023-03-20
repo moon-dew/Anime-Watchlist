@@ -21,8 +21,6 @@ class Item(ttk.Frame):
         self.container = container
 
         anilist = json.load(open("animelist.json"))
-        print([i for i in anilist['Accounts'][0]["List"]])
-        print(id)
         self.item = [
             i for i in anilist['Accounts'][0]["List"] if i[0] == int(id)
         ]
@@ -46,6 +44,14 @@ class Item(ttk.Frame):
         self.scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+
+    def save(self, option, value):
+        anilist = json.load(open("animelist.json"))
+        for i, e in enumerate(anilist['Accounts'][0]["List"]):
+            if e[0] == self.masteritem["ID"]:
+                anilist['Accounts'][0]["List"][i][option] = value
+        
+        json.dumps(anilist, open("animelist.json", "w"))
 
 class Settings(ttk.LabelFrame):
 
@@ -84,7 +90,10 @@ class Settings(ttk.LabelFrame):
                                          width=2)
                 if self.container.item:
                     self.init_score.set(self.container.item[3])
-                self.score.pack(side=tk.LEFT, **options)
+                def update():
+                    if not self.init_score.get() == "":
+                        self.container.container.save(3, int(self.init_score.get()))
+                self.score.pack(side=tk.LEFT, command=update(), **options)
                 self.max_score = ttk.Label(self, text="/10")
                 self.max_score.pack(side=tk.RIGHT, **options)
 
@@ -124,3 +133,4 @@ class Settings(ttk.LabelFrame):
 
         self.add_remove = AddRemove(self)
         self.add_remove.pack(**options)
+
