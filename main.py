@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from Frames.search import Search
 from Frames.list import ListFrame
+from tkinter import messagebox
 
 class MainNotebook(ttk.Notebook):
     def __init__(self, container):
