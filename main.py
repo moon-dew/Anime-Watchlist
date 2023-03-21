@@ -26,3 +26,10 @@ if __name__ == "__main__":
     app.mainloop()
     # style = ttk.Style(app)
     # style.theme_use("aqua")
+
+
+#animelist.json is a json file with the following format:
+#ID
+#Status
+#Progress
+#Score

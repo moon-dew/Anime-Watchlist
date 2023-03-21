@@ -45,13 +45,13 @@ class Item(ttk.Frame):
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
 
-    def save(self, option, value):
+    def save(self, option, value):  
         anilist = json.load(open("animelist.json"))
         for i, e in enumerate(anilist['Accounts'][0]["List"]):
             if e[0] == self.masteritem["ID"]:
                 anilist['Accounts'][0]["List"][i][option] = value
         
-        json.dumps(anilist, open("animelist.json", "w"))
+        json.dump(anilist, open("animelist.json", "w"), indent=4)
 
 class Settings(ttk.LabelFrame):
 
@@ -66,12 +66,20 @@ class Settings(ttk.LabelFrame):
         values = [
             "Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"
         ]
+        values_enum = [
+            EStatus.WATCHING, EStatus.COMPLETED, EStatus.ON_HOLD, EStatus.DROPPED, EStatus.PLAN_TO_WATCH
+        ]
+        def callback(event):
+            self.container.save(1, values_enum[values.index(self.init_status.get())].value)
+        
         self.init_status = tk.StringVar()
         self.status = ttk.Combobox(self,
                                    values=values,
                                    textvariable=self.init_status,
                                    width=15,
-                                   state="readonly")
+                                   state="readonly",
+                                   )
+        self.status.bind("<<ComboboxSelected>>", callback)
         if self.item:
             self.status.current(self.item[1])
         self.status.pack(**options)
@@ -82,18 +90,20 @@ class Settings(ttk.LabelFrame):
                 super().__init__(container, text="Score")
                 self.container = container
                 self.init_score = tk.StringVar()
+                def update():
+                    if not self.init_score.get() == "":
+                        self.container.container.save(3, int(self.init_score.get()))
                 self.score = ttk.Spinbox(self,
                                          from_=0,
                                          to=10,
                                          textvariable=self.init_score,
                                          state="readonly",
-                                         width=2)
+                                         width=2,
+                                         command=update)
                 if self.container.item:
                     self.init_score.set(self.container.item[3])
-                def update():
-                    if not self.init_score.get() == "":
-                        self.container.container.save(3, int(self.init_score.get()))
-                self.score.pack(side=tk.LEFT, command=update(), **options)
+                
+                self.score.pack(side=tk.LEFT, **options)
                 self.max_score = ttk.Label(self, text="/10")
                 self.max_score.pack(side=tk.RIGHT, **options)
 
@@ -104,12 +114,16 @@ class Settings(ttk.LabelFrame):
                 self.container = container
                 episodes = self.container.masteritem["Episodes"]
                 self.init_progress = tk.StringVar()
+                def update():
+                    if not self.init_progress.get() == "":
+                        self.container.container.save(2, int(self.init_progress.get()))
                 self.progress = ttk.Spinbox(self,
                                             from_=0,
                                             to=episodes,
                                             textvariable=self.init_progress,
                                             state="readonly",
-                                            width=4)
+                                            width=4,
+                                            command=update)
                 if self.container.item:
                     self.init_progress.set(self.container.item[2])
                 self.progress.pack(side=tk.LEFT, **options)
@@ -126,7 +140,12 @@ class Settings(ttk.LabelFrame):
 
             def __init__(self, container):
                 super().__init__(container)
-                self.add_button = ttk.Button(self, text="+")
+                self.container = container
+                def add():
+                    anilist = json.load(open("animelist.json"))
+                    anilist['Accounts'][0]["List"].append([self.container.masteritem["ID"], self.container.init_status.get(), self.container.progress.init_progress.get(), self.container.score.init_score.get()])
+                    json.dump(anilist, open("animelist.json", "w"), indent=4)
+                self.add_button = ttk.Button(self, text="+", command=add)
                 self.add_button.pack(side=tk.LEFT, **options)
                 self.remove_button = ttk.Button(self, text="-")
                 self.remove_button.pack(side=tk.RIGHT, **options)
