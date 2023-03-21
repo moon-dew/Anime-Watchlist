@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import json
 from enum import Enum
+from tkinter import messagebox
 
 
 class EStatus(Enum):
@@ -63,24 +64,25 @@ class Settings(ttk.LabelFrame):
         self.item = self.container.item
         self.masteritem = self.container.masteritem
 
-        values = [
+        self.values = [
             "Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"
         ]
-        values_enum = [
+        self.values_enum = [
             EStatus.WATCHING, EStatus.COMPLETED, EStatus.ON_HOLD, EStatus.DROPPED, EStatus.PLAN_TO_WATCH
         ]
         def callback(event):
-            self.container.save(1, values_enum[values.index(self.init_status.get())].value)
+            self.container.save(1, self.values_enum[self.values.index(self.init_status.get())].value)
         
         self.init_status = tk.StringVar()
         self.status = ttk.Combobox(self,
-                                   values=values,
+                                   values=self.values,
                                    textvariable=self.init_status,
                                    width=15,
                                    state="readonly",
                                    )
         self.status.bind("<<ComboboxSelected>>", callback)
         if self.item:
+            print(self.item)
             self.status.current(self.item[1])
         self.status.pack(**options)
 
@@ -142,9 +144,14 @@ class Settings(ttk.LabelFrame):
                 super().__init__(container)
                 self.container = container
                 def add():
-                    anilist = json.load(open("animelist.json"))
-                    anilist['Accounts'][0]["List"].append([self.container.masteritem["ID"], self.container.init_status.get(), self.container.progress.init_progress.get(), self.container.score.init_score.get()])
-                    json.dump(anilist, open("animelist.json", "w"), indent=4)
+                    if len(self.container.item) == 0:
+                        anilist = json.load(open("animelist.json"))
+                        anilist['Accounts'][0]["List"].append([self.container.masteritem["ID"], self.container.values_enum[self.container.values.index(self.container.init_status.get())].value, int(self.container.progress.init_progress.get()), int(self.container.score.init_score.get())])
+                        json.dump(anilist, open("animelist.json", "w"), indent=4)
+                    else:
+                        print("This anime is already in your list.")
+                        messagebox.showerror(title="Error", message="This anime is already in your list.")
+
                 self.add_button = ttk.Button(self, text="+", command=add)
                 self.add_button.pack(side=tk.LEFT, **options)
                 self.remove_button = ttk.Button(self, text="-")
