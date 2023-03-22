@@ -82,7 +82,6 @@ class Settings(ttk.LabelFrame):
                                    )
         self.status.bind("<<ComboboxSelected>>", callback)
         if self.item:
-            print(self.item)
             self.status.current(self.item[1])
         self.status.pack(**options)
 
@@ -146,15 +145,45 @@ class Settings(ttk.LabelFrame):
                 def add():
                     if len(self.container.item) == 0:
                         anilist = json.load(open("animelist.json"))
-                        anilist['Accounts'][0]["List"].append([self.container.masteritem["ID"], self.container.values_enum[self.container.values.index(self.container.init_status.get())].value, int(self.container.progress.init_progress.get()), int(self.container.score.init_score.get())])
+                        # ID, Status, Progress, Score
+                        # 0, 1, 2, 3
+                        id_ = self.container.masteritem["ID"]
+                        if self.container.status.get() == "":
+                            messagebox.showerror(title="Error", message="Please select a status.")
+                            return
+                        status = self.container.values_enum[self.container.values.index(self.container.init_status.get())].value
+                        if self.container.progress.init_progress.get() == "":
+                            progress = 0
+                        else:
+                            progress = int(self.container.progress.init_progress.get())
+                        if self.container.score.init_score.get() == "":
+                            score = 0
+                        else:
+                            score = int(self.container.score.init_score.get())
+                        anilist['Accounts'][0]["List"].append([id_, status, progress, score])
+                        anilist['Accounts'][0]["List"].sort(key=lambda x: x[0])
                         json.dump(anilist, open("animelist.json", "w"), indent=4)
                     else:
-                        print("This anime is already in your list.")
                         messagebox.showerror(title="Error", message="This anime is already in your list.")
 
                 self.add_button = ttk.Button(self, text="+", command=add)
                 self.add_button.pack(side=tk.LEFT, **options)
-                self.remove_button = ttk.Button(self, text="-")
+                def remove():
+                    answer = messagebox.askokcancel(title="Remove", message="Are you sure you want to remove this anime from your list?")
+                    if answer:
+                        if len(self.container.item) != 0:
+                            anilist = json.load(open("animelist.json"))
+                            for i, e in enumerate(anilist['Accounts'][0]["List"]):
+                                if e[0] == self.container.masteritem["ID"]:
+                                    anilist['Accounts'][0]["List"].pop(i)
+                                    break
+                            json.dump(anilist, open("animelist.json", "w"), indent=4)
+                            self.container.init_status.set("")
+                            self.container.progress.init_progress.set("")
+                            self.container.score.init_score.set("")
+                        else:
+                            messagebox.showerror(title="Error", message="This anime is not in your list.")
+                self.remove_button = ttk.Button(self, text="-", command=remove)
                 self.remove_button.pack(side=tk.RIGHT, **options)
 
         self.add_remove = AddRemove(self)

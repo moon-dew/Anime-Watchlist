@@ -3,6 +3,8 @@ from tkinter import ttk
 from Frames.search import Search
 from Frames.list import ListFrame
 from tkinter import messagebox
+import secrets
+
 
 class MainNotebook(ttk.Notebook):
     def __init__(self, container):
@@ -23,11 +25,11 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
+
     notebook = MainNotebook(app)
     app.mainloop()
     # style = ttk.Style(app)
     # style.theme_use("aqua")
-
 
 #animelist.json is a json file with the following format:
 #ID

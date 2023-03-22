@@ -11,8 +11,12 @@ class ListFrame(ttk.Frame):
         self.anime_list = json.load(open("masterlist.json"))
         self.personal_list = json.load(open("animelist.json"))
 
+
         self.title = ttk.Label(self, text="Anime List")
         self.title.pack(**options)
+
+        self.category_buttons = self.CategoryButtons(self)
+        self.category_buttons.pack(**options)
 
         columns = ("name", "genre", "score")
         self.anilist = MyTreeview(self, columns=columns, show="headings")
@@ -28,3 +32,19 @@ class ListFrame(ttk.Frame):
             self.anilist.insert("", "end", values=(i["Name"], i["Genre"], j))
 
         self.anilist.pack(**options)
+    
+    class CategoryButtons(ttk.LabelFrame):
+        def __init__(self, container):
+            super().__init__(container)
+            options = {'padx': 5, 'pady': 5}
+            self.container = container
+            self.title = ttk.Label(self, text="Categories")
+            self.title.pack(**options)
+            self.buttons = []
+            self.category = tk.StringVar()
+            categories = [("Watching", 0), ("Completed", 1), ("On Hold", 2), ("Dropped", 3), ("Plan to Watch", 4)]
+            for i in categories:
+                self.buttons.append(ttk.Radiobutton(self, text=i[0], variable=self.category, value=i[1]))
+                self.buttons[-1].pack(side=tk.LEFT, **options)
+            
+            
