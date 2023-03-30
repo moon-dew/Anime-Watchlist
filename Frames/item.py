@@ -1,9 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 import json
+from mal import Anime
 from enum import Enum
 from tkinter import messagebox
-
+import requests
+from PIL import Image, ImageTk
+import io
+import threading
+from animecache import get_cached_anime
 
 class EStatus(Enum):
     WATCHING = 0
@@ -12,10 +17,8 @@ class EStatus(Enum):
     DROPPED = 3
     PLAN_TO_WATCH = 4
 
-
 class Item(ttk.Frame):
-
-    def __init__(self, container, id):
+    def __init__(self, container, mal_id):
         super().__init__(container)
         # field options
         options = {'padx': 5, 'pady': 5}
@@ -23,15 +26,12 @@ class Item(ttk.Frame):
 
         anilist = json.load(open("animelist.json"))
         self.item = [
-            i for i in anilist['Accounts'][0]["List"] if i[0] == int(id)
+            i for i in anilist['Accounts'][0]["List"] if i[0] == int(mal_id)
         ]
         if self.item:
             self.item = self.item[0]
-        masterlist = json.load(open("masterlist.json"))
-        self.masteritem = [
-            i for i in masterlist['List'] if i["ID"] == int(id)
-        ][0]
-        self.title = ttk.Label(self, text=self.masteritem["Name"])
+        self.malitem = get_cached_anime(mal_id)
+        self.title = ttk.Label(self, text=self.malitem.title)
         self.title.pack(**options)
 
         def quit():
@@ -39,19 +39,27 @@ class Item(ttk.Frame):
             self.container.forget(self.tabID)
 
         self.settings = Settings(self)
-        self.settings.pack(anchor=tk.NW, **options)
+        self.settings.pack(side=tk.LEFT, fill=tk.X, **options)
+
+        self.images = []
+        img = Image.open(io.BytesIO(requests.get(self.malitem.image_url).content))
+        img = img.resize((200, 300), Image.ANTIALIAS)
+        img = ImageTk.PhotoImage(img)
+        self.images.append(img)
+        image = ttk.Label(self, image=img)
+        image.pack(side=tk.LEFT, fill=tk.X, **options)
+        description = ttk.Label(self, text=self.malitem.synopsis)
+        description.pack(**options)
+        description.config(wraplength=250)
         self.quit_button = ttk.Button(self, text="Quit", command=quit)
         self.quit_button.pack(side=tk.BOTTOM, **options)
-        self.scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-
-    def save(self, option, value):  
+    def save(self, option, value):
         anilist = json.load(open("animelist.json"))
         for i, e in enumerate(anilist['Accounts'][0]["List"]):
-            if e[0] == self.masteritem["ID"]:
+            if e[0] == self.malitem.mal_id:
                 anilist['Accounts'][0]["List"][i][option] = value
-        
+
         json.dump(anilist, open("animelist.json", "w"), indent=4)
 
 class Settings(ttk.LabelFrame):
@@ -62,7 +70,7 @@ class Settings(ttk.LabelFrame):
         options = {'padx': 5, 'pady': 5}
         self.container = container
         self.item = self.container.item
-        self.masteritem = self.container.masteritem
+        self.malitem = self.container.malitem
 
         self.values = [
             "Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"
@@ -113,7 +121,7 @@ class Settings(ttk.LabelFrame):
             def __init__(self, container):
                 super().__init__(container, text="Episodes")
                 self.container = container
-                episodes = self.container.masteritem["Episodes"]
+                episodes = self.container.malitem.episodes
                 self.init_progress = tk.StringVar()
                 def update():
                     if not self.init_progress.get() == "":
@@ -147,7 +155,7 @@ class Settings(ttk.LabelFrame):
                         anilist = json.load(open("animelist.json"))
                         # ID, Status, Progress, Score
                         # 0, 1, 2, 3
-                        id_ = self.container.masteritem["ID"]
+                        id_ = self.container.malitem.mal_id
                         if self.container.status.get() == "":
                             messagebox.showerror(title="Error", message="Please select a status.")
                             return
@@ -160,9 +168,10 @@ class Settings(ttk.LabelFrame):
                             score = 0
                         else:
                             score = int(self.container.score.init_score.get())
-                        anilist['Accounts'][0]["List"].append([id_, status, progress, score])
+                        anilist['Accounts'][0]["List"].append([int(id_), status, progress, score])
                         anilist['Accounts'][0]["List"].sort(key=lambda x: x[0])
                         json.dump(anilist, open("animelist.json", "w"), indent=4)
+                        reload_list(self.container.container.container)
                     else:
                         messagebox.showerror(title="Error", message="This anime is already in your list.")
 
@@ -174,13 +183,14 @@ class Settings(ttk.LabelFrame):
                         if len(self.container.item) != 0:
                             anilist = json.load(open("animelist.json"))
                             for i, e in enumerate(anilist['Accounts'][0]["List"]):
-                                if e[0] == self.container.masteritem["ID"]:
+                                if e[0] == int(self.container.malitem.mal_id):
                                     anilist['Accounts'][0]["List"].pop(i)
                                     break
                             json.dump(anilist, open("animelist.json", "w"), indent=4)
                             self.container.init_status.set("")
                             self.container.progress.init_progress.set("")
                             self.container.score.init_score.set("")
+                            reload_list(self.container.container.container)
                         else:
                             messagebox.showerror(title="Error", message="This anime is not in your list.")
                 self.remove_button = ttk.Button(self, text="-", command=remove)
@@ -189,3 +199,5 @@ class Settings(ttk.LabelFrame):
         self.add_remove = AddRemove(self)
         self.add_remove.pack(**options)
 
+def reload_list(main):
+    threading.Thread(target=main.children["!listframe"].load).start()

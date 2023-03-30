@@ -3,7 +3,6 @@ from tkinter import ttk
 from Frames.search import Search
 from Frames.list import ListFrame
 from tkinter import messagebox
-import secrets
 
 
 class MainNotebook(ttk.Notebook):
@@ -30,6 +29,8 @@ if __name__ == "__main__":
     app.mainloop()
     # style = ttk.Style(app)
     # style.theme_use("aqua")
+
+#the rating to hide: "Rx - Hentai"
 
 #animelist.json is a json file with the following format:
 #ID
