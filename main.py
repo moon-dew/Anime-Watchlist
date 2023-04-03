@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from Frames.search import Search
 from Frames.list import ListFrame
+from Frames.accounts import Accounts
 from tkinter import messagebox
 
 
@@ -9,8 +10,11 @@ class MainNotebook(ttk.Notebook):
     def __init__(self, container):
         super().__init__(container)
 
+        self.account = 0
+
         options = {'padx': 5, 'pady': 5}
         
+        self.add(Accounts(self), text="Accounts")
         self.add(Search(self), text="Search")
         self.add(ListFrame(self), text="List")
         self.pack(**options)

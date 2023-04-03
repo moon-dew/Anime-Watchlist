@@ -10,6 +10,8 @@ import io
 import threading
 from animecache import get_cached_anime
 
+account = 0
+
 class EStatus(Enum):
     WATCHING = 0
     COMPLETED = 1
@@ -20,13 +22,16 @@ class EStatus(Enum):
 class Item(ttk.Frame):
     def __init__(self, container, mal_id):
         super().__init__(container)
+
+        global account
+        account = container.account
         # field options
         options = {'padx': 5, 'pady': 5}
         self.container = container
 
         anilist = json.load(open("animelist.json"))
         self.item = [
-            i for i in anilist['Accounts'][0]["List"] if i[0] == int(mal_id)
+            i for i in anilist["Accounts"][account]["List"] if i[0] == int(mal_id)
         ]
         if self.item:
             self.item = self.item[0]
@@ -56,9 +61,9 @@ class Item(ttk.Frame):
 
     def save(self, option, value):
         anilist = json.load(open("animelist.json"))
-        for i, e in enumerate(anilist['Accounts'][0]["List"]):
+        for i, e in enumerate(anilist["Accounts"][account]["List"]):
             if e[0] == self.malitem.mal_id:
-                anilist['Accounts'][0]["List"][i][option] = value
+                anilist["Accounts"][account]["List"][i][option] = value
 
         json.dump(anilist, open("animelist.json", "w"), indent=4)
 
@@ -168,8 +173,8 @@ class Settings(ttk.LabelFrame):
                             score = 0
                         else:
                             score = int(self.container.score.init_score.get())
-                        anilist['Accounts'][0]["List"].append([int(id_), status, progress, score])
-                        anilist['Accounts'][0]["List"].sort(key=lambda x: x[0])
+                        anilist["Accounts"][account]["List"].append([int(id_), status, progress, score])
+                        anilist["Accounts"][account]["List"].sort(key=lambda x: x[0])
                         json.dump(anilist, open("animelist.json", "w"), indent=4)
                         reload_list(self.container.container.container)
                     else:
@@ -182,9 +187,9 @@ class Settings(ttk.LabelFrame):
                     if answer:
                         if len(self.container.item) != 0:
                             anilist = json.load(open("animelist.json"))
-                            for i, e in enumerate(anilist['Accounts'][0]["List"]):
+                            for i, e in enumerate(anilist["Accounts"][account]["List"]):
                                 if e[0] == int(self.container.malitem.mal_id):
-                                    anilist['Accounts'][0]["List"].pop(i)
+                                    anilist["Accounts"][account]["List"].pop(i)
                                     break
                             json.dump(anilist, open("animelist.json", "w"), indent=4)
                             self.container.init_status.set("")

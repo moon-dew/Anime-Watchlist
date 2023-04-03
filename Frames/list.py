@@ -20,7 +20,7 @@ class ListFrame(ttk.Frame):
         for i in self.winfo_children():
             i.destroy()
         self.personal_list = json.load(open("animelist.json"))
-        self.personal_list = self.personal_list["Accounts"][0]["List"]
+        self.personal_list = self.personal_list["Accounts"][self.container.account]["List"]
 
 
         self.title = ttk.Label(self, text="Anime List")
