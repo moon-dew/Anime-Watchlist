@@ -14,7 +14,7 @@ rate_limit = time.perf_counter()
 class RateLimitedSearch(AnimeSearch):
     def __init__(self, query, timeout=0.5):
         #create a rate limited search
-        global current_call
+        global current_call 
         global rate_limit
         current_call = query
         while time.perf_counter() - rate_limit < timeout:
